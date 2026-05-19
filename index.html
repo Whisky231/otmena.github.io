@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Возврат заказа — СемьЯ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .merchant-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .merchant-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: white;
+      border-radius: 50px;
+      padding: 8px 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .merchant-logo-icon {
+      width: 32px;
+      height: 32px;
+      background: #c8251d;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .merchant-logo-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .main-content {
+      display: block;
+    }
+
+    .main-content.hide {
+      display: none;
+    }
+
+    .refund-header {
+      background: #1a1a1a;
+      padding: 20px 24px;
+      text-align: center;
+    }
+
+    .refund-header-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .refund-header-sub {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 4px;
+    }
+
+    .refund-content {
+      padding: 24px;
+    }
+
+    .refund-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+    }
+
+    .refund-sub {
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .field-group {
+      margin-bottom: 16px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 8px;
+    }
+
+    .field-input {
+      width: 100%;
+      height: 48px;
+      padding: 0 14px;
+      border: 1.5px solid #e8e8e8;
+      border-radius: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: #1a1a1a;
+      outline: none;
+      transition: border-color 0.2s;
+      background: #fafafa;
+    }
+
+    .field-input:focus {
+      border-color: #c8251d;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(200, 37, 29, 0.08);
+    }
+
+    .field-input::placeholder {
+      color: #c0c0c0;
+    }
+
+    .field-input.error {
+      border-color: #e74c3c;
+      background: #fff8f8;
+    }
+
+    .order-prefix-wrap {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid #e8e8e8;
+      border-radius: 10px;
+      background: #fafafa;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .order-prefix-wrap:focus-within {
+      border-color: #c8251d;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(200, 37, 29, 0.08);
+    }
+
+    .order-prefix {
+      padding-left: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #555;
+    }
+
+    .order-prefix-wrap .field-input {
+      border: none;
+      background: transparent;
+      box-shadow: none;
+      height: 48px;
+    }
+
+    .order-prefix-wrap .field-input:focus {
+      border: none;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .error-msg {
+      font-size: 11px;
+      color: #e74c3c;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .error-msg.show {
+      display: block;
+    }
+
+    .refund-reason-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 10px;
+    }
+
+    .reason-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1.5px solid #e8e8e8;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 8px;
+    }
+
+    .reason-option:hover {
+      border-color: #c8251d;
+      background: #fff8f8;
+    }
+
+    .reason-option.selected {
+      border-color: #c8251d;
+      background: #fff8f8;
+    }
+
+    .reason-radio {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #ccc;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .reason-option.selected .reason-radio {
+      border-color: #c8251d;
+    }
+
+    .reason-radio-inner {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: transparent;
+      transition: all 0.2s;
+    }
+
+    .reason-option.selected .reason-radio-inner {
+      background: #c8251d;
+    }
+
+    .reason-text {
+      font-size: 13px;
+      font-weight: 500;
+      color: #1a1a1a;
+    }
+
+    .other-input-wrap {
+      margin-top: -4px;
+      margin-bottom: 8px;
+    }
+
+    .other-textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid #e8e8e8;
+      border-radius: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: #1a1a1a;
+      outline: none;
+      resize: vertical;
+      min-height: 60px;
+      background: #fafafa;
+      transition: border-color 0.2s;
+    }
+
+    .other-textarea:focus {
+      border-color: #c8251d;
+      background: white;
+    }
+
+    .other-textarea::placeholder {
+      color: #c0c0c0;
+    }
+
+    .refund-btn {
+      width: 100%;
+      height: 52px;
+      background: #c8251d;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .refund-btn:hover {
+      background: #a81e17;
+      box-shadow: 0 4px 16px rgba(200, 37, 29, 0.35);
+    }
+
+    .refund-btn:active {
+      transform: scale(0.98);
+    }
+
+    .refund-btn:disabled {
+      background: #b0b0b0;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .refund-btn.loading {
+      background: #a81e17;
+      pointer-events: none;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .secure-footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 14px 24px 18px;
+      border-top: 1px solid #f5f5f5;
+      font-size: 11px;
+      color: #bbb;
+    }
+
+    .secure-icon {
+      font-size: 13px;
+    }
+
+    /* ======= CANCEL SCREEN ======= */
+    .cancel-screen {
+      display: none;
+      padding: 48px 24px 40px;
+      text-align: center;
+    }
+
+    .cancel-screen.show {
+      display: block;
+    }
+
+    .cancel-icon-wrap {
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 24px;
+      position: relative;
+    }
+
+    .cancel-circle {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      stroke: #e74c3c;
+      fill: none;
+      stroke-width: 3;
+      stroke-dasharray: 276;
+      stroke-dashoffset: 276;
+      transform: rotate(-90deg);
+      transform-origin: center;
+    }
+
+    .cancel-cross {
+      stroke: #e74c3c;
+      fill: none;
+      stroke-width: 3.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 60;
+      stroke-dashoffset: 60;
+    }
+
+    .cancel-bg {
+      fill: #fef2f2;
+    }
+
+    @keyframes drawCircleCancel {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    @keyframes drawCross {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .cancel-screen.show .cancel-circle {
+      animation: drawCircleCancel 0.6s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+    }
+
+    .cancel-screen.show .cancel-cross {
+      animation: drawCross 0.4s cubic-bezier(0.65, 0, 0.35, 1) 0.5s forwards;
+    }
+
+    .cancel-screen.show .cancel-content {
+      animation: fadeUp 0.4s ease 0.7s both;
+    }
+
+    .cancel-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    .cancel-sub {
+      font-size: 14px;
+      color: #777;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .cancel-detail {
+      background: #f5f5f5;
+      border-radius: 12px;
+      padding: 16px 20px;
+      text-align: left;
+      margin-bottom: 24px;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      font-size: 13px;
+    }
+
+    .detail-row:not(:last-child) {
+      border-bottom: 1px solid #ebebeb;
+    }
+
+    .detail-key {
+      color: #999;
+    }
+
+    .detail-val {
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .detail-val.red {
+      color: #e74c3c;
+    }
+
+    .receipt-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .receipt-btn {
+      height: 44px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 10px;
+      background: white;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: #555;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .receipt-btn:hover {
+      border-color: #1d3a8a;
+      color: #1d3a8a;
+      background: #f8f9ff;
+    }
+
+    .back-btn {
+      width: 100%;
+      height: 48px;
+      background: #f5f5f5;
+      color: #555;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .back-btn:hover {
+      background: #ebebeb;
+    }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+
+      .page {
+        max-width: 100%;
+      }
+
+      .card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+      }
+
+      .back-btn,
+      .receipt-actions,
+      .secure-footer {
+        display: none !important;
+      }
+
+      .cancel-screen {
+        padding: 24px;
+      }
+
+      .cancel-icon-wrap {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 12px;
+      }
+
+      .cancel-icon-wrap svg {
+        width: 48px;
+        height: 48px;
+      }
+
+      .cancel-title {
+        font-size: 18px;
+      }
+
+      .cancel-sub {
+        font-size: 12px;
+        margin-bottom: 16px;
+      }
+
+      .cancel-detail {
+        padding: 12px 16px;
+      }
+
+      .detail-row {
+        font-size: 11px;
+        padding: 4px 0;
+      }
+
+      @page {
+        margin: 1cm;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page">
+
+    <div class="merchant-header">
+      <div class="merchant-logo">
+        <div class="merchant-logo-icon">🍕</div>
+        <div class="merchant-logo-name">СемьЯ</div>
+      </div>
+    </div>
+
+    <div class="card">
+
+      <div class="main-content" id="mainContent">
+
+        <div class="refund-header">
+          <div class="refund-header-title">Отмена заказа</div>
+          <div class="refund-header-sub">Заполните данные для возврата средств</div>
+        </div>
+
+        <div class="refund-content">
+
+          <div class="field-group">
+            <label class="field-label">Номер заказа</label>
+            <div class="order-prefix-wrap">
+              <span class="order-prefix">#</span>
+              <input type="text" class="field-input" id="orderNumInput" placeholder="SF-12345" maxlength="19"
+                oninput="onOrderInput(this)">
+            </div>
+            <div class="error-msg" id="errOrder">Введите номер заказа</div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Сумма заказа</label>
+            <input type="text" class="field-input" id="orderAmountInput" placeholder="Например: 650" inputmode="numeric"
+              oninput="onAmountInput(this)">
+            <div class="error-msg" id="errAmount">Введите сумму</div>
+          </div>
+
+          <div class="refund-reason-title">Причина возврата</div>
+
+          <div class="reason-option" onclick="selectReason(this, 'Передумал(а)')">
+            <div class="reason-radio">
+              <div class="reason-radio-inner"></div>
+            </div>
+            <div class="reason-text">Передумал(а)</div>
+          </div>
+          <div class="reason-option" onclick="selectReason(this, 'Нашёл дешевле')">
+            <div class="reason-radio">
+              <div class="reason-radio-inner"></div>
+            </div>
+            <div class="reason-text">Нашёл дешевле</div>
+          </div>
+          <div class="reason-option" onclick="selectReason(this, 'Ошибка в заказе')">
+            <div class="reason-radio">
+              <div class="reason-radio-inner"></div>
+            </div>
+            <div class="reason-text">Ошибка в заказе</div>
+          </div>
+          <div class="reason-option" onclick="selectReason(this, 'Слишком долгая доставка')">
+            <div class="reason-radio">
+              <div class="reason-radio-inner"></div>
+            </div>
+            <div class="reason-text">Слишком долгая доставка</div>
+          </div>
+          <div class="reason-option" onclick="selectReason(this, 'Другое')">
+            <div class="reason-radio">
+              <div class="reason-radio-inner"></div>
+            </div>
+            <div class="reason-text">Другое</div>
+          </div>
+          <div class="other-input-wrap" id="otherInputWrap" style="display:none">
+            <textarea class="other-textarea" id="otherReason" placeholder="Укажите причину..." rows="3"></textarea>
+          </div>
+
+          <button class="refund-btn" id="refundBtn" onclick="doRefund()" disabled>
+            <span id="refundBtnText">Оформить возврат</span>
+            <div class="spinner" id="refundSpinner"></div>
+          </button>
+
+        </div>
+
+        <div class="secure-footer">
+          <span class="secure-icon">🔒</span>
+          Безопасный возврат · 3D-Secure · PCI DSS
+        </div>
+
+      </div>
+
+      <div class="cancel-screen" id="cancelScreen">
+        <div class="cancel-icon-wrap">
+          <svg viewBox="0 0 88 88" width="88" height="88">
+            <circle class="cancel-bg" cx="44" cy="44" r="42" />
+            <circle class="cancel-circle" cx="44" cy="44" r="41" />
+            <line class="cancel-cross" x1="30" y1="30" x2="58" y2="58" />
+            <line class="cancel-cross" x1="58" y1="30" x2="30" y2="58" />
+          </svg>
+        </div>
+        <div class="cancel-content">
+          <div class="cancel-title">Заказ отменён</div>
+          <div class="cancel-sub">Средства будут возвращены в течение 3-х часов<br>на счёт, с которого была совершена
+            оплата</div>
+          <div class="cancel-detail">
+            <div class="detail-row">
+              <span class="detail-key">Статус</span>
+              <span class="detail-val red">✕ Отменён</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-key">Сумма возврата</span>
+              <span class="detail-val" id="cancelAmount">—</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-key">Номер заказа</span>
+              <span class="detail-val" id="cancelOrder">—</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-key">Причина</span>
+              <span class="detail-val" id="cancelReason">—</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-key">Время</span>
+              <span class="detail-val" id="cancelTime">—</span>
+            </div>
+          </div>
+          <div class="receipt-actions">
+            <button class="receipt-btn" onclick="downloadReceipt('pdf')">📄 Скачать PDF</button>
+            <button class="receipt-btn" onclick="downloadReceipt('docx')">📝 Скачать DOCX</button>
+          </div>
+          <button class="back-btn" onclick="resetAll()">← На новый возврат</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    let selectedReason = '';
+    let receiptData = null;
+
+    function onAmountInput(input) {
+      input.value = input.value.replace(/\D/g, '').slice(0, 10);
+      onInputChange();
+    }
+
+    function onOrderInput(input) {
+      let v = input.value;
+      if (v.startsWith('#')) v = v.slice(1);
+      input.value = v;
+      onInputChange();
+    }
+
+    function onInputChange() {
+      const orderOk = document.getElementById('orderNumInput').value.trim().length > 0;
+      const amountOk = document.getElementById('orderAmountInput').value.trim().length > 0;
+      document.getElementById('refundBtn').disabled = !(orderOk && amountOk && selectedReason);
+    }
+
+    function selectReason(el, reason) {
+      document.querySelectorAll('.reason-option').forEach(r => r.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedReason = reason;
+      document.getElementById('otherInputWrap').style.display = reason === 'Другое' ? 'block' : 'none';
+      onInputChange();
+    }
+
+    function clearErr(id) {
+      document.getElementById(id).classList.remove('show');
+      document.getElementById(id.replace('err', 'orderNumInput').replace('err', 'orderAmountInput')).classList.remove('error');
+      // not needed for simplicity; validation inline
+    }
+
+    function doRefund() {
+      const orderNum = '#' + document.getElementById('orderNumInput').value.trim();
+      const amountRaw = document.getElementById('orderAmountInput').value.trim();
+      let ok = true;
+
+      if (!orderNum) {
+        document.getElementById('errOrder').classList.add('show');
+        ok = false;
+      } else {
+        document.getElementById('errOrder').classList.remove('show');
+      }
+
+      if (!amountRaw) {
+        document.getElementById('errAmount').classList.add('show');
+        ok = false;
+      } else {
+        document.getElementById('errAmount').classList.remove('show');
+      }
+
+      if (!ok || !selectedReason) return;
+
+      const reason = selectedReason === 'Другое'
+        ? (document.getElementById('otherReason').value.trim() || 'Другое')
+        : selectedReason;
+
+      const btn = document.getElementById('refundBtn');
+      btn.classList.add('loading');
+      btn.disabled = true;
+      document.getElementById('refundBtnText').textContent = 'Оформляем возврат...';
+      document.getElementById('refundSpinner').style.display = 'block';
+
+      const amount = amountRaw + ' ₽';
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+      const dateStr = now.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      const method = 'СБП';
+
+      receiptData = { orderNum, amount, method, time: timeStr, date: dateStr, reason, status: 'Отменён' };
+
+      setTimeout(() => {
+        document.getElementById('mainContent').classList.add('hide');
+
+        document.getElementById('cancelAmount').textContent = amount;
+        document.getElementById('cancelOrder').textContent = orderNum;
+        document.getElementById('cancelReason').textContent = reason;
+        document.getElementById('cancelTime').textContent = timeStr;
+
+        document.getElementById('cancelScreen').classList.add('show');
+      }, 1500);
+    }
+
+    function receiptHtml() {
+      const d = receiptData;
+      return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Чек возврата ' + d.orderNum + '</title>' +
+        '<style>' +
+        'body{font-family:Arial,sans-serif;max-width:400px;margin:40px auto;padding:20px;color:#1a1a1a}' +
+        'h1{font-size:20px;text-align:center;margin-bottom:4px}' +
+        '.sub{text-align:center;color:#999;font-size:13px;margin-bottom:20px}' +
+        'table{width:100%;border-collapse:collapse;font-size:13px}' +
+        'td{padding:8px 0;border-bottom:1px solid #eee}' +
+        'td:last-child{text-align:right;font-weight:600}' +
+        'td:first-child{color:#999}' +
+        '.total td{font-size:16px;font-weight:700;border:none;padding-top:12px}' +
+        '.total td:last-child{color:#e74c3c}' +
+        '.footer{text-align:center;color:#bbb;font-size:11px;margin-top:24px}' +
+        '</style></head><body>' +
+        '<h1>СемьЯ</h1>' +
+        '<div class="sub">Чек возврата</div>' +
+        '<table>' +
+        '<tr><td>Номер заказа</td><td>' + d.orderNum + '</td></tr>' +
+        '<tr><td>Дата</td><td>' + d.date + '</td></tr>' +
+        '<tr><td>Время</td><td>' + d.time + '</td></tr>' +
+        '<tr><td>Способ возврата</td><td>' + d.method + '</td></tr>' +
+        '<tr><td>Причина</td><td>' + d.reason + '</td></tr>' +
+        '<tr><td>Статус</td><td style="color:#e74c3c">' + d.status + '</td></tr>' +
+        '<tr class="total"><td>Сумма возврата</td><td>' + d.amount + '</td></tr>' +
+        '</table>' +
+        '<div class="footer">Средства вернутся в течение 3-х часов</div>' +
+        '</body></html>';
+    }
+
+    function downloadReceipt(format) {
+      if (!receiptData) return;
+      if (format === 'pdf') {
+        const win = window.open('', '_blank');
+        win.document.write(receiptHtml());
+        win.document.close();
+        win.focus();
+        win.print();
+      } else if (format === 'docx') {
+        const blob = new Blob([receiptHtml()], { type: 'application/msword' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'refund-' + receiptData.orderNum.replace(/[^a-zA-Z0-9-]/g, '') + '.doc';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+    }
+
+    function resetAll() {
+      document.getElementById('mainContent').classList.remove('hide');
+      document.getElementById('cancelScreen').classList.remove('show');
+      receiptData = null;
+
+      document.getElementById('orderNumInput').value = '';
+      document.getElementById('orderAmountInput').value = '';
+      document.getElementById('errOrder').classList.remove('show');
+      document.getElementById('errAmount').classList.remove('show');
+
+      document.querySelectorAll('.reason-option').forEach(r => r.classList.remove('selected'));
+      selectedReason = '';
+      document.getElementById('otherInputWrap').style.display = 'none';
+      document.getElementById('otherReason').value = '';
+
+      const btn = document.getElementById('refundBtn');
+      btn.classList.remove('loading');
+      btn.disabled = true;
+      document.getElementById('refundBtnText').textContent = 'Оформить возврат';
+      document.getElementById('refundSpinner').style.display = 'none';
+    }
+  </script>
+</body>
+
+</html>
